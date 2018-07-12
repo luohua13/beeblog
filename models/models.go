@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/Unknown/com"
+	"github.com/Unknwon/com"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/mattn/go-sqlite3"
 	"os"

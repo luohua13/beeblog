@@ -11,5 +11,4 @@ type MainController struct {
 func (this *MainController) Get() {
 	this.TplName = "home.html"
 	
-	
 }

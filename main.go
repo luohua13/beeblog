@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "beeblog/routers"
-	"beelog/controllers"
-	"beelog/models"
+	//"beeblog/controllers"
+	"beeblog/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
