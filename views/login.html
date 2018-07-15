@@ -1,0 +1,25 @@
+{{template "header"}}
+		<title> 登录 我的beego博客 </title>
+	</head>
+	<body>
+		<div class="container" style="width: 500px">
+		<form method="POST" action="/login">
+		  <div class="form-group">
+			<label>Account</label>
+			<input class="form-control" placeholder="Enter account" name="uname">
+		  </div>
+		  <div class="form-group">
+			<label>Password</label>
+			<input type="password" class="form-control"  placeholder="Password" name="pwd">
+		  </div>
+	
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" name="autologin"> 自动登录
+			</label>
+		  </div>
+		  <button type="submit" class="btn btn-default">登录</button>
+		</form>
+		</div>
+	</body>
+</html>

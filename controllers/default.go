@@ -9,6 +9,7 @@ type MainController struct {
 }
 
 func (this *MainController) Get() {
+	this.Data["IsHome"] = true
 	this.TplName = "home.html"
 	
 }
