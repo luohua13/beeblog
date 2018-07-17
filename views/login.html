@@ -6,20 +6,42 @@
 		<form method="POST" action="/login">
 		  <div class="form-group">
 			<label>Account</label>
-			<input class="form-control" placeholder="Enter account" name="uname">
+			<input id="uname" class="form-control" placeholder="Enter account" name="uname">
 		  </div>
 		  <div class="form-group">
 			<label>Password</label>
-			<input type="password" class="form-control"  placeholder="Password" name="pwd">
+			<input id="pwd" type="password" class="form-control"  placeholder="Password" name="pwd">
 		  </div>
 	
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" name="autologin"> 自动登录
+			  <input type="checkbox" name="autoLogin"> 自动登录
 			</label>
 		  </div>
-		  <button type="submit" class="btn btn-default">登录</button>
+		  <button type="submit" class="btn btn-default" onclick="return checkInput();">登录</button>
+		  <button  class="btn btn-default" onclick="return backToHome();">返回</button>
 		</form>
+		
+		<script type="text/javascript">
+		function  checkInput() {
+			var uname = document.getElementById("uname")
+			if (uname.value.length == 0) {
+				alert("请输入帐号")
+				return false
+			}
+			var pwd = document.getElementById("pwd")
+			if (pwd.value.length == 0) {
+				alert("请输入密码")
+				return false
+			}
+			return true
+		}
+		
+		function backToHome() bool {
+			windous.location.href = "/"
+			return false
+		}
+		</script>
 		</div>
 	</body>
 </html>

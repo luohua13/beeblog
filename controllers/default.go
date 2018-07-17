@@ -12,4 +12,5 @@ func (this *MainController) Get() {
 	this.Data["IsHome"] = true
 	this.TplName = "home.html"
 	
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 }

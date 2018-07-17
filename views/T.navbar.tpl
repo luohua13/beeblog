@@ -7,7 +7,7 @@
 		<li {{if .IsTopic}}class="active" {{end}}><a href="/topic">文章</a></li>
 	</ul>
 </div>
-	
+
 <div class="pull-right">
 	<ul class="nav navbar-nav">
 		{{if .IsLogin}}
