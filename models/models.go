@@ -30,11 +30,12 @@ type Topic struct {
 	Id              int64
 	Uid             int64
 	Title           string
-	Content         string `orm:"index"`
-	Attachment      string `orm:"index"`
-	Views           int64
+	Content         string `orm:"size(5000)"`
+	Attachment      string
+	Cteated         time.Time `orm:"index"`
+	Updated         time.Time `orm:"index"`
+	Views           int64     `orm:"index"`
 	Author          string
-	ReplyTime       time.Time `orm:"index"`
 	ReplyCount      int64
 	ReplyLastUserId int64
 }
@@ -48,6 +49,21 @@ func RegisterDB() {
 	orm.RegisterModel(new(Category), new(Topic))
 	orm.RegisterDriver(_SQLITE_DRIVER, orm.DRSqlite)
 	orm.RegisterDataBase("default", _SQLITE_DRIVER, _DB_NAME, 10)
+}
+
+func AddTopic(title, content string) error {
+	o := orm.NewOrm()
+	
+	topic := &Topic {
+		Title: title,
+		Content: content,
+		Cteated: time.Now(),
+		Updated: time.Now(),
+	}
+	
+	_, err := o.Insert(topic)
+		
+	return err
 }
 func AddCategory(name string) error {
 	o := orm.NewOrm()
@@ -83,6 +99,15 @@ func DelCategory(id string) error {
 	return err
 }
 
+func GetAllTopics() ([]*Topic, error) {
+	o := orm.NewOrm()
+	
+	topics := make([]*Topic,0)
+	qs := o.QueryTable("Topic")
+	_, err := qs.All(&topics)
+	
+	return topics, err
+}
 func GetAllCategories() ([]*Category, error) {
 	o := orm.NewOrm()
 
