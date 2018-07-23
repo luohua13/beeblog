@@ -17,11 +17,11 @@ const (
 type Category struct {
 	Id              int64
 	Title           string
-	Created         time.Time `orm:"index"`
-	Views           int64     `orm:"index"`
-	TopicTime       time.Time
+	//Created         time.Time `orm:"index"`
+	//Views           int64     `orm:"index"`
+	//TopicTime       time.Time
 	TopicCount      int64
-	TopicLastUserId int64
+	//TopicLastUserId int64
 }
 
 type Topic struct {
