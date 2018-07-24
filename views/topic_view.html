@@ -10,7 +10,7 @@
     	</div>
     	<div class="container">
            <h1 style="margin-top:60px">{{.Topic.Title}}</h1> 
-  
+           <h3>分类：<a href="/?cate={{.Topic.Category}}" class="btn btn-default">{{.Topic.Category}}</a></h3>
            <h2><a href="/topic/modify?tid={{.Topic.Id}}" class="btn btn-default">修改</a> </h2>
            {{.Topic.Content}}
     	</div>
