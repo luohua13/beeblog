@@ -52,22 +52,22 @@ func (this *TopicController) Add() {
 }
 
 //修改文章
-// func (this *TopicController) Modify() {
-	// this.TplNames = "topic_modify.html"
+func (this *TopicController) Modify() {
+	this.TplNames = "topic_modify.html"
 
-	// tid := this.Input().Get("tid")
-	// topic, err := models.GetTopic(tid)
-	// if err != nil {
-		// beego.Error(err)
-		// this.Redirect("/", 302)
-		// return
-	// }
+	tid := this.Input().Get("tid")
+	topic, err := models.GetTopic(tid)
+	if err != nil {
+		beego.Error(err)
+		this.Redirect("/", 302)
+		return
+	}
 
-	// this.Data["Topic"] = topic
-	// this.Data["Tid"] = tid
+	this.Data["Topic"] = topic
+	this.Data["Tid"] = tid
 
-	// this.Data["CategoryList"], _ = models.GetAllCategory()
-// }
+	this.Data["CategoryList"], _ = models.GetAllCategory()
+}
 
 //文章详情
 // func (this *TopicController) View() {
@@ -95,16 +95,16 @@ func (this *TopicController) Add() {
 // }
 
 //删除文章
-// func (this *TopicController) Delete() {
-	// if !checkAccount(this.Ctx) {
-		// this.Redirect("/login", 302)
-		// return
-	// }
+func (this *TopicController) Delete() {
+	if !checkAccount(this.Ctx) {
+		this.Redirect("/login", 302)
+		return
+	}
 
-	// err := models.DeleteTopic(this.Ctx.Input.Param("0"))
-	// if err != nil {
-		// beego.Error(err)
-	// }
-	// this.Redirect("/topic", 302)
+	err := models.DeleteTopic(this.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err)
+	}
+	this.Redirect("/topic", 302)
 
-// }
+}
