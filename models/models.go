@@ -119,3 +119,36 @@ func GetAllCategories() ([]*Category, error) {
 	return cates, err
 }
 
+func GetTopic(tid string) (*Topic,error) {
+	tidNum, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	o := orm.NewOrm()
+	topic := new(Topic)
+
+	qs := o.QueryTable("topic")
+	err = qs.Filter("id", tidNum).One(topic)
+	if err != nil {
+		return nil, err
+	}
+
+	topic.Views++
+
+	_, err = o.Update(topic)
+	return topic, err
+}
+
+func DeleteTopic(id string) error {
+	cid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	o := orm.NewOrm()
+
+	topic := &Topic{Id: cid}
+	_, err = o.Delete(topic)
+	return err
+}
