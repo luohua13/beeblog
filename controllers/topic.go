@@ -35,20 +35,40 @@ func (this *TopicController) Post() {
 	title := this.Input().Get("title")
 	content := this.Input().Get("content")
 	
+	//=====================================
+	category := this.Input().Get("category")
+	tid := this.Input().Get("tid")
+	//======================================
 	var err error
-	err = models.AddTopic(title,content)
 	
+	if len(tid) == 0 {
+		err = models.AddTopic(title,content,category)
+		if models.CheckCategory(category) {
+			beego.Debug("had!")
+		} else {
+			beego.Debug("Not!")
+			models.AddCategory(category)
+		}
+	} else {
+		err = models.ModifyTopic()
+		if models.CheckCategory(category) {
+			beego.Debug("had!")
+		} else {
+			beego.Debug("Not!")
+			models.AddCategory(category)
+		}
+	}
 	if err != nil {
 		beego.Error(err)
 	}
-	this.Redirect("/topic",301)
+	this.Redirect("/topic",302)
 }
 
 //增加文章
 func (this *TopicController) Add() {
 	this.TplName = "topic_add.html"
 
-	//this.Data["CategoryList"], _ = models.GetAllCategory()
+	this.Data["CategoryList"], _ = models.GetAllCategory()
 }
 
 //修改文章
