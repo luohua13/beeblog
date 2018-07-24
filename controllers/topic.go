@@ -70,17 +70,15 @@ func (this *TopicController) Modify() {
 }
 
 //文章详情
-// func (this *TopicController) View() {
-	// this.TplNames = "topic_view.html"
+func (this *TopicController) View() {
+	topic, err := models.GetTopic(this.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err)
+		this.Redirect("/", 302)
+		return
+	}
 
-	// topic, err := models.GetTopic(this.Ctx.Input.Param("0"))
-	// if err != nil {
-		// beego.Error(err)
-		// this.Redirect("/", 302)
-		// return
-	// }
-
-	// this.Data["Topic"] = topic
+	this.Data["Topic"] = topic
 	// this.Data["Labels"] = strings.Split(topic.Labels, " ")
 	// this.Data["Tid"] = this.Ctx.Input.Param("0")
 
@@ -91,7 +89,8 @@ func (this *TopicController) Modify() {
 	// }
 
 	// this.Data["Replies"] = replies
-	// this.Data["IsLogin"] = checkAccount(this.Ctx)
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
+	this.TplNames = "topic_view.html"
 // }
 
 //删除文章
