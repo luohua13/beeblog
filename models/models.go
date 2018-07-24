@@ -30,6 +30,7 @@ type Topic struct {
 	Id              int64
 	Uid             int64
 	Title           string
+	Category	string
 	Content         string `orm:"size(5000)"`
 	Attachment      string
 	Cteated         time.Time `orm:"index"`
@@ -51,20 +52,71 @@ func RegisterDB() {
 	orm.RegisterDataBase("default", _SQLITE_DRIVER, _DB_NAME, 10)
 }
 
-func AddTopic(title, content string) error {
+func IsDir(Dir string) bool {
+	f, e := os.Stat(Dir)
+	if e != nil {
+		return false
+	}
+
+	return f.IsDir()
+}
+func ModifyTopic(tid, title, content, category string) error {
+	o := orm.NewOrm()
+	id, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		beego.Error(err)
+		return err
+	}
+
+	topic := &Topic{Id: id}
+	beego.Debug(topic)
+
+	if o.Read(topic) == nil {
+		topic.Title = title
+		topic.Category = category
+		topic.Content = content
+		topic.Updated = time.Now()
+		o.Update(topic)
+	}
+
+	return err
+}
+
+func AddTopic(title, content, category string) error {
 	o := orm.NewOrm()
 	
 	topic := &Topic {
 		Title: title,
+		Category: category,
 		Content: content,
 		Cteated: time.Now(),
 		Updated: time.Now(),
 	}
 	
 	_, err := o.Insert(topic)
-		
+	if err != nil {
+		beego.Error(err)
+	}
 	return err
 }
+
+func GetTopicsByCategory(category string, IsDesc bool) ([]*Topic, error) {
+	o := orm.NewOrm()
+
+	topics := make([]*Topic, 0)
+
+	qs := o.QueryTable("topic")
+
+	var err error
+
+	if IsDesc {
+		_, err = qs.Filter("category", category).OrderBy("created").All(&topics)
+	} else {
+		_, err = qs.Filter("category", category).All(&topics)
+	}
+	return topics, err
+}
+
 func AddCategory(name string) error {
 	o := orm.NewOrm()
 
@@ -151,4 +203,37 @@ func DeleteTopic(id string) error {
 	topic := &Topic{Id: cid}
 	_, err = o.Delete(topic)
 	return err
+}
+
+func UpdateCategory(name string) error {
+	o := orm.NewOrm()
+
+	category := new(Category)
+
+	qs := o.QueryTable(category)
+	err := qs.Filter("title", name).One(category)
+	if err != nil {
+		return err
+	}
+
+	category.TopicCount++
+
+	_, err = o.Update(category)
+	return err
+
+}
+
+/* 检查是否分类存在 */
+
+func CheckCategory(title string) bool {
+	AllCategories, err := GetAllCategories()
+	if err != nil {
+		beego.Error(err)
+	}
+	for _, category := range AllCategories {
+		if category.Title == title {
+			return true
+		}
+	}
+	return false
 }
