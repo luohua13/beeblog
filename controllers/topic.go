@@ -51,7 +51,7 @@ func (this *TopicController) Post() {
 			models.AddCategory(category)
 		}
 	} else {
-		err = models.ModifyTopic()
+		err = models.ModifyTopic(tid, title, content, category)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
 		} else {
@@ -69,12 +69,12 @@ func (this *TopicController) Post() {
 func (this *TopicController) Add() {
 	this.TplName = "topic_add.html"
 	this.Data["IsTopic"] = true
-	this.Data["CategoryList"], _ = models.GetAllCategory()
+	this.Data["CategoryList"], _ = models.GetAllCategories()
 }
 
 //修改文章
 func (this *TopicController) Modify() {
-	this.TplNames = "topic_modify.html"
+	this.TplName = "topic_modify.html"
 
 	tid := this.Input().Get("tid")
 	topic, err := models.GetTopic(tid)
@@ -87,7 +87,7 @@ func (this *TopicController) Modify() {
 	this.Data["Topic"] = topic
 	this.Data["Tid"] = tid
 	this.Data["IsTopic"] = true
-	this.Data["CategoryList"], _ = models.GetAllCategory()
+	this.Data["CategoryList"], _ = models.GetAllCategories()
 }
 
 //文章详情
@@ -112,8 +112,8 @@ func (this *TopicController) View() {
 	// this.Data["Replies"] = replies
 	this.Data["IsTopic"] = true
 	this.Data["IsLogin"] = checkAccount(this.Ctx)
-	this.TplNames = "topic_view.html"
-// }
+	this.TplName = "topic_view.html"
+}
 
 //删除文章
 func (this *TopicController) Delete() {
