@@ -45,6 +45,7 @@ func (this *TopicController) Post() {
 		err = models.AddTopic(title,content,category)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
+			models.UpdateCategory(category)
 		} else {
 			beego.Debug("Not!")
 			models.AddCategory(category)
@@ -67,7 +68,7 @@ func (this *TopicController) Post() {
 //增加文章
 func (this *TopicController) Add() {
 	this.TplName = "topic_add.html"
-
+	this.Data["IsTopic"] = true
 	this.Data["CategoryList"], _ = models.GetAllCategory()
 }
 
@@ -85,7 +86,7 @@ func (this *TopicController) Modify() {
 
 	this.Data["Topic"] = topic
 	this.Data["Tid"] = tid
-
+	this.Data["IsTopic"] = true
 	this.Data["CategoryList"], _ = models.GetAllCategory()
 }
 
@@ -109,6 +110,7 @@ func (this *TopicController) View() {
 	// }
 
 	// this.Data["Replies"] = replies
+	this.Data["IsTopic"] = true
 	this.Data["IsLogin"] = checkAccount(this.Ctx)
 	this.TplNames = "topic_view.html"
 // }
