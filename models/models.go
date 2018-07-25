@@ -128,7 +128,7 @@ func AddCategory(name string) error {
 		fmt.Println("luohua0000000")
 		return err
 	}
-
+	cate.TopicCount++ 
 	_, err = o.Insert(cate)
 	if err != nil {
 		fmt.Println("luohua333333333")
