@@ -17,7 +17,7 @@ func (this *TopicController) Get() {
 	this.Data["IsTopic"] = true
 	this.TplName = "topic.html"
 	
-	topics, err := models.GetAllTopics()
+	topics, err := models.GetAllTopics(false)
 	if err != nil {
 		beego.Error(err)
 	} else {
@@ -101,7 +101,7 @@ func (this *TopicController) View() {
 
 	this.Data["Topic"] = topic
 	// this.Data["Labels"] = strings.Split(topic.Labels, " ")
-	// this.Data["Tid"] = this.Ctx.Input.Param("0")
+	this.Data["Tid"] = this.Ctx.Input.Param("0")
 
 	// replies, err := models.GetAllReplies(this.Ctx.Input.Param("0"))
 	// if err != nil {

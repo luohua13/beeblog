@@ -111,7 +111,7 @@ func GetTopicsByCategory(category string, IsDesc bool) ([]*Topic, error) {
 	var err error
 
 	if IsDesc {
-		_, err = qs.Filter("category", category).OrderBy("created").All(&topics)
+		_, err = qs.Filter("category", category).OrderBy("cteated").All(&topics)
 	} else {
 		_, err = qs.Filter("category", category).All(&topics)
 	}
@@ -152,12 +152,18 @@ func DelCategory(id string) error {
 	return err
 }
 
-func GetAllTopics() ([]*Topic, error) {
+func GetAllTopics(isDesc bool) ([]*Topic, error) {
 	o := orm.NewOrm()
 	
 	topics := make([]*Topic,0)
 	qs := o.QueryTable("Topic")
-	_, err := qs.All(&topics)
+	
+	var err error
+	if isDesc {
+		_, err = qs.OrderBy("-cteated").All(&topics)
+	} else {
+		_, err = qs.All(&topics)
+	}
 	
 	return topics, err
 }

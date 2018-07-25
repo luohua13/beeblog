@@ -8,13 +8,15 @@
 			</div>
 		</div>
 		<div class="container">
+			{{range .Topics}}
 			<div class="page-header">
-				<h2 style="margin-top:60px;">我的第一篇博客</h2>
-				<h6 class="text-muted">文章发表与2018年7月12日22:21 共有100次浏览，100个评论</h6>
+				<h2 style="margin-top:60px;">{{.Title}}</h2>
+				<h6 class="text-muted">文章发表与{{.Cteated}} 共有{{.Views}}次浏览 {{.ReplyCount}}个评论</h6>
 				<p>
-					大家好，这是我的第一篇博客！欢迎围观！
+					{{.Content}}
 				</p>
 			</div>
+			{{end}}
 		</div>
 	</body>
 </html>
