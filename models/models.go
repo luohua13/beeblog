@@ -31,7 +31,7 @@ type Topic struct {
 	Id              int64
 	Uid             int64
 	Title           string
-	Category	string
+	Category		string
 	Content         string `orm:"size(5000)"`
 	Attachment      string
 	Cteated         time.Time `orm:"index"`
@@ -40,6 +40,14 @@ type Topic struct {
 	Author          string
 	ReplyCount      int64
 	ReplyLastUserId int64
+}
+
+type Comment struct {
+	Id 		int64
+	Tid		int64
+	Name	string
+	Content	string     `orm:"size(1000)"`
+	Created time.Time  `orm:"index"`
 }
 
 func RegisterDB() {
@@ -61,6 +69,12 @@ func IsDir(Dir string) bool {
 
 	return f.IsDir()
 }
+
+func AddReply(tid, nickname, content string) error {
+
+
+}
+
 func ModifyTopic(tid, title, content, category string) error {
 	o := orm.NewOrm()
 	id, err := strconv.ParseInt(tid, 10, 64)
