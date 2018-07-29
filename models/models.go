@@ -56,7 +56,7 @@ func RegisterDB() {
 		os.Create(_DB_NAME)
 	}
 
-	orm.RegisterModel(new(Category), new(Topic))
+	orm.RegisterModel(new(Category), new(Topic),new(Comment))
 	orm.RegisterDriver(_SQLITE_DRIVER, orm.DRSqlite)
 	orm.RegisterDataBase("default", _SQLITE_DRIVER, _DB_NAME, 10)
 }
@@ -71,8 +71,41 @@ func IsDir(Dir string) bool {
 }
 
 func AddReply(tid, nickname, content string) error {
+	tidNum, err := strconv.ParseInt(tid,10,64)
+	if err != nil {
+		return  err
+	}
+	
+	reply := &Comment{
+		Tid:		tidNum,
+		Name:		nickname,
+		Content:	content,
+		Created:	time.Now(),
+	}
+	
+	o := orm.NewOrm()
+	_, err = o.Insert(reply)
+	if err != nil {
+		beego.Error(err)
+	}
+	return err
+}
 
+func GetAllReplies(tid string) (replies []*Comment,err error) {
+	tidNum, err := strconv.ParseInt(tid,10,64)
+	if err != nil {
+		return nil, err
+	}
+	
+	o := orm.NewOrm()
 
+	replies = make([]*Comment, 0)
+
+	qs := o.QueryTable("comment")
+
+	_, err = qs.Filter("tid", tidNum).All(&replies)
+	
+	return replies, err
 }
 
 func ModifyTopic(tid, title, content, category string) error {

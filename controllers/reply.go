@@ -11,13 +11,13 @@ type ReplyController struct {
 }
 
 func (this *ReplyController) Add() {
-	tis := this.Input().Get("pid")
+	tid := this.Input().Get("tid")
 	err := models.AddReply(tid,this.Input().Get("nickname"),
 		this.Input().Get("content"))
 	if err != nil {
 		beego.Error(err)
 	}
 	
-	this.Redirct("/topic/view"+tid,302)
+	this.Redirect("/topic/view/"+tid,302)
 }
 

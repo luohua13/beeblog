@@ -92,6 +92,7 @@ func (this *TopicController) Modify() {
 
 //文章详情
 func (this *TopicController) View() {
+	this.TplName = "topic_view.html"
 	topic, err := models.GetTopic(this.Ctx.Input.Param("0"))
 	if err != nil {
 		beego.Error(err)
@@ -103,16 +104,16 @@ func (this *TopicController) View() {
 	// this.Data["Labels"] = strings.Split(topic.Labels, " ")
 	this.Data["Tid"] = this.Ctx.Input.Param("0")
 
-	// replies, err := models.GetAllReplies(this.Ctx.Input.Param("0"))
-	// if err != nil {
-		// beego.Error(err)
-		// return
-	// }
+	replies, err := models.GetAllReplies(this.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err)
+		return
+	}
 
-	// this.Data["Replies"] = replies
+	this.Data["Replies"] = replies
 	this.Data["IsTopic"] = true
 	this.Data["IsLogin"] = checkAccount(this.Ctx)
-	this.TplName = "topic_view.html"
+	
 }
 
 //删除文章
