@@ -13,5 +13,5 @@ func init() {
 	beego.AutoRouter(&controllers.TopicController{})
 	beego.Router("/reply",&controllers.ReplyController{})
 	beego.Router("/reply/add",&controllers.ReplyController{},"post:Add")
-	//beego.Router("/reply/delete",&controllers.ReplyController{},"post:Del")
+	beego.Router("/reply/delete",&controllers.ReplyController{},"get:Delete")
 }
