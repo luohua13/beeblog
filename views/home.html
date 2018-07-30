@@ -12,9 +12,10 @@
 			<div class="page-header">
 				<h2 style="margin-top:60px;">{{.Title}}</h2>
 				<h6 class="text-muted">文章发表与{{.Cteated}} 共有{{.Views}}次浏览 {{.ReplyCount}}个评论</h6>
-				<p>
-					{{.Content}}
-				</p>
+				<script>
+				   var contents={{.Content}}.replace(/\r\n/g,"<br />");
+				   document.write("<p style='font-family:SimHei;font-size:140%'>"+contents+"</p>");
+				</script>
 			</div>
 			{{end}}
 		</div>

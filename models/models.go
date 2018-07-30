@@ -12,6 +12,7 @@ import (
 	"strconv"
 )
 
+
 const (
 	_DB_NAME       = "data/beeblog.db"
 	_SQLITE_DRIVER = "sqlite3"
@@ -34,8 +35,8 @@ type Topic struct {
 	Category		string
 	Content         string `orm:"size(5000)"`
 	Attachment      string
-	Cteated         time.Time `orm:"index"`
-	Updated         time.Time `orm:"index"`
+	Cteated         string `orm:"index"`
+	Updated         string `orm:"index"`
 	Views           int64     `orm:"index"`
 	Author          string
 	ReplyCount      int64
@@ -47,7 +48,7 @@ type Comment struct {
 	Tid		int64
 	Name	string
 	Content	string     `orm:"size(1000)"`
-	Created time.Time  `orm:"index"`
+	Created string
 }
 
 func RegisterDB() {
@@ -80,7 +81,7 @@ func AddReply(tid, nickname, content string) error {
 		Tid:		tidNum,
 		Name:		nickname,
 		Content:	content,
-		Created:	time.Now(),
+		Created:	time.Now().Format("2006-01-02 15:04:05"),
 	}
 	
 	o := orm.NewOrm()
@@ -123,6 +124,7 @@ func GetAllReplies(tid string) (replies []*Comment,err error) {
 
 func ModifyTopic(tid, title, content, category string) error {
 	o := orm.NewOrm()
+	
 	id, err := strconv.ParseInt(tid, 10, 64)
 	if err != nil {
 		beego.Error(err)
@@ -136,7 +138,7 @@ func ModifyTopic(tid, title, content, category string) error {
 		topic.Title = title
 		topic.Category = category
 		topic.Content = content
-		topic.Updated = time.Now()
+		topic.Updated = time.Now().Format("2006-01-02 15:04:05")
 		o.Update(topic)
 	}
 
@@ -150,8 +152,8 @@ func AddTopic(title, content, category string) error {
 		Title: title,
 		Category: category,
 		Content: content,
-		Cteated: time.Now(),
-		Updated: time.Now(),
+		Cteated: time.Now().Format("2006-01-02 15:04:05"),
+		Updated: time.Now().Format("2006-01-02 15:04:05"),
 	}
 	
 	_, err := o.Insert(topic)
