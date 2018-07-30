@@ -16,9 +16,12 @@
     	</div>
 		
 		<div class="container">
+		{{$tid := .Topic.Id}}
+		{{$IsLogin := .IsLogin}}
 			{{range .Replies}}
 			<h3>{{.Name}} <small>{{.Created}}</small></h3>
 			{{.Content}}
+			<h5>{{if $IsLogin}}<a href="/reply/delete?rid={{.Id}}&&tid={{$tid}}">删除</a>{{end}}</h5>
 			{{end}}
 			<h3>本文回复</h3>
 			<form method="post" action="/reply/add">
