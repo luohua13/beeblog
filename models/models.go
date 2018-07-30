@@ -91,6 +91,19 @@ func AddReply(tid, nickname, content string) error {
 	return err
 }
 
+func DeleteReply(id string) error {
+	cid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	o := orm.NewOrm()
+
+	reply := &Comment{Id: cid}
+	_, err = o.Delete(reply)
+	return err
+}
+
 func GetAllReplies(tid string) (replies []*Comment,err error) {
 	tidNum, err := strconv.ParseInt(tid,10,64)
 	if err != nil {
