@@ -21,3 +21,17 @@ func (this *ReplyController) Add() {
 	this.Redirect("/topic/view/"+tid,302)
 }
 
+func (this *ReplyController) Delete() {
+	if !checkAccount(this.Ctx) {
+		this.Redirect("/login", 302)
+		return
+	}
+	tid := this.Input().Get("tid")
+	err := models.DeleteReply(this.Input().Get("rid"))
+	if err != nil {
+		beego.Error(err)
+	}
+
+	this.Redirect("/topic/view/"+tid, 302)
+}
+
