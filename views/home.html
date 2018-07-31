@@ -8,16 +8,27 @@
 			</div>
 		</div>
 		<div class="container">
-			{{range .Topics}}
-			<div class="page-header">
-				<h2 style="margin-top:60px;">{{.Title}}</h2>
-				<h6 class="text-muted">文章发表与{{.Cteated}} 共有{{.Views}}次浏览 {{.ReplyCount}}个评论</h6>
-				<script>
-				   var contents={{.Content}}.replace(/\r\n/g,"<br />");
-				   document.write("<p style='font-family:SimHei;font-size:140%'>"+contents+"</p>");
-				</script>
+			<div class="col-md-9">
+				{{range .Topics}}
+				<div class="page-header">
+					<h2 style="margin-top:60px;">{{.Title}}</h2>
+					<h6 class="text-muted">文章发表与{{.Cteated}} 共有{{.Views}}次浏览 {{.ReplyCount}}个评论</h6>
+					<script>
+					   var contents={{.Content}}.replace(/\r\n/g,"<br />");
+					   document.write("<p style='font-family:SimHei;font-size:140%'>"+contents+"</p>");
+					</script>
+				</div>
+				{{end}}
 			</div>
-			{{end}}
+			
+			<div class="col-md-3">
+				<h3 style="margin-top:60px">文章分类</h3>
+				<ul>
+					{{range .Categories}}
+					<li style='font-family:SimHei;font-size:140%'><a href="/?cate={{.Title}}">{{.Title}}</a></li>
+					{{end}}
+				</ul>
+			</div>
 		</div>
 	</body>
 </html>

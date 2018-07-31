@@ -17,7 +17,7 @@ func (this *TopicController) Get() {
 	this.Data["IsTopic"] = true
 	this.TplName = "topic.html"
 	
-	topics, err := models.GetAllTopics(false)
+	topics, err := models.GetAllTopics("",false)
 	if err != nil {
 		beego.Error(err)
 	} else {
@@ -92,6 +92,7 @@ func (this *TopicController) Modify() {
 
 //文章详情
 func (this *TopicController) View() {
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 	this.TplName = "topic_view.html"
 	topic, err := models.GetTopic(this.Ctx.Input.Param("0"))
 	if err != nil {
@@ -112,8 +113,6 @@ func (this *TopicController) View() {
 
 	this.Data["Replies"] = replies
 	this.Data["IsTopic"] = true
-	this.Data["IsLogin"] = checkAccount(this.Ctx)
-	
 }
 
 //删除文章
