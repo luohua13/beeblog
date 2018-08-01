@@ -18,6 +18,10 @@ func (this *ReplyController) Add() {
 		beego.Error(err)
 	}
 	
+	err =models.UpdateTopic(tid,true)
+	if err != nil {
+		beego.Error(err)
+	}
 	this.Redirect("/topic/view/"+tid,302)
 }
 
@@ -39,4 +43,3 @@ func (this *ReplyController) Delete() {
 	
 	this.Redirect("/topic/view/"+tid, 302)
 }
-

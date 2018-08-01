@@ -131,10 +131,11 @@ func ModifyTopic(tid, title, content, category string) error {
 		return err
 	}
 
+	var oldCate string
 	topic := &Topic{Id: id}
-	beego.Debug(topic)
-
+	
 	if o.Read(topic) == nil {
+		oldCate = topic.Category
 		topic.Title = title
 		topic.Category = category
 		topic.Content = content
@@ -142,6 +143,51 @@ func ModifyTopic(tid, title, content, category string) error {
 		o.Update(topic)
 	}
 
+	if len(oldCate) > 0 {
+		cate := new(Category)
+		qs := o.QueryTable("category")
+		err :=  qs.Filter("title",oldCate).One(cate)
+		if err == nil {
+			cate.TopicCount--
+			_, err = o.Update(cate)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return err
+}
+
+func DeleteTopic(id string) error {
+	cid, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	o := orm.NewOrm()
+
+	topic := &Topic{Id: cid}
+	var oldCate string
+	if o.Read(topic) == nil {
+		oldCate = topic.Category
+		_, err = o.Delete(topic)
+		if err != nil {
+			return err
+		}
+	}
+	
+	if len(oldCate) > 0 {
+		cate := new(Category)
+		qs := o.QueryTable("category")
+		err :=  qs.Filter("title",oldCate).One(cate)
+		if err == nil {
+			cate.TopicCount--
+			_, err = o.Update(cate)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return err
 }
 
@@ -188,13 +234,11 @@ func AddCategory(name string) error {
 	qs := o.QueryTable("Category")
 	err := qs.Filter("title", name).One(cate)
 	if err == nil {
-		fmt.Println("luohua0000000")
 		return err
 	}
-	cate.TopicCount++ 
+	//cate.TopicCount++ 
 	_, err = o.Insert(cate)
 	if err != nil {
-		fmt.Println("luohua333333333")
 		return err
 	}
 
@@ -264,18 +308,6 @@ func GetTopic(tid string) (*Topic,error) {
 	return topic, err
 }
 
-func DeleteTopic(id string) error {
-	cid, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		return err
-	}
-
-	o := orm.NewOrm()
-
-	topic := &Topic{Id: cid}
-	_, err = o.Delete(topic)
-	return err
-}
 
 func UpdateCategory(name string,add bool) error {
 	o := orm.NewOrm()
