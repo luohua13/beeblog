@@ -38,6 +38,7 @@ func (this *TopicController) Post() {
 	//=====================================
 	category := this.Input().Get("category")
 	tid := this.Input().Get("tid")
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 	//======================================
 	var err error
 	
@@ -45,7 +46,7 @@ func (this *TopicController) Post() {
 		err = models.AddTopic(title,content,category)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
-			models.UpdateCategory(category)
+			models.UpdateCategory(category,true)
 		} else {
 			beego.Debug("Not!")
 			models.AddCategory(category)
@@ -54,6 +55,7 @@ func (this *TopicController) Post() {
 		err = models.ModifyTopic(tid, title, content, category)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
+			models.UpdateCategory(category,false)
 		} else {
 			beego.Debug("Not!")
 			models.AddCategory(category)
@@ -70,6 +72,7 @@ func (this *TopicController) Add() {
 	this.TplName = "topic_add.html"
 	this.Data["IsTopic"] = true
 	this.Data["CategoryList"], _ = models.GetAllCategories()
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 }
 
 //修改文章
@@ -88,6 +91,7 @@ func (this *TopicController) Modify() {
 	this.Data["Tid"] = tid
 	this.Data["IsTopic"] = true
 	this.Data["CategoryList"], _ = models.GetAllCategories()
+	this.Data["IsLogin"] = checkAccount(this.Ctx)
 }
 
 //文章详情
