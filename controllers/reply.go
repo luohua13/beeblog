@@ -31,7 +31,12 @@ func (this *ReplyController) Delete() {
 	if err != nil {
 		beego.Error(err)
 	}
-
+	
+	err = models.UpdateTopic(tid,false)
+	if err != nil {
+		beego.Error(err)
+	}
+	
 	this.Redirect("/topic/view/"+tid, 302)
 }
 
