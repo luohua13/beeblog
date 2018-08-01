@@ -277,7 +277,7 @@ func DeleteTopic(id string) error {
 	return err
 }
 
-func UpdateCategory(name string) error {
+func UpdateCategory(name string,add bool) error {
 	o := orm.NewOrm()
 
 	category := new(Category)
@@ -288,15 +288,40 @@ func UpdateCategory(name string) error {
 		return err
 	}
 
-	category.TopicCount++
-
+	if add {
+		category.TopicCount++
+	} 
 	_, err = o.Update(category)
 	return err
 
 }
 
-/* 检查是否分类存在 */
+func UpdateTopic(tid string,add bool) error {
+	cid, err := strconv.ParseInt(tid,10,64)
+	if err != nil {
+		return err
+	}
+	
+	o := orm.NewOrm()
+	
+	topic := new(Topic)
+	qs := o.QueryTable(topic)
+	err = qs.Filter("Id",cid).One(topic)
+	if err != nil {
+		return err
+	}
+	if add {
+		topic.ReplyCount++
+	} else {
+		topic.ReplyCount--
+	}
+	
+	_, err = o.Update(topic)
+	
+	return err
+}
 
+/* 检查是否分类存在 */
 func CheckCategory(title string) bool {
 	AllCategories, err := GetAllCategories()
 	if err != nil {
