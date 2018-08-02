@@ -11,7 +11,6 @@ import (
 	"strconv"
 )
 
-
 const (
 	_DB_NAME       = "data/beeblog.db"
 	_SQLITE_DRIVER = "sqlite3"
@@ -34,11 +33,12 @@ type Topic struct {
 	Category		string
 	Content         string `orm:"size(5000)"`
 	Attachment      string
-	Cteated         string `orm:"index"`
-	Updated         string `orm:"index"`
-	Views           int64     `orm:"index"`
-	Author          string
+	Cteated         string  `orm:"index"`
+	Updated         string  `orm:"index"`
+	Views           int64   `orm:"index"`
+	Author          string  `orm:"index"`
 	ReplyCount      int64
+	ReplyTime       string
 	ReplyLastUserId int64
 }
 
@@ -47,7 +47,7 @@ type Comment struct {
 	Tid		int64
 	Name	string
 	Content	string     `orm:"size(1000)"`
-	Created string
+	Created string		`orm:"index"`
 }
 
 func RegisterDB() {
@@ -85,9 +85,7 @@ func AddReply(tid, nickname, content string) error {
 	
 	o := orm.NewOrm()
 	_, err = o.Insert(reply)
-	if err != nil {
-		beego.Error(err)
-	}
+	
 	return err
 }
 
@@ -225,7 +223,7 @@ func GetTopicsByCategory(category string, IsDesc bool) ([]*Topic, error) {
 	return topics, err
 }
 
-func AddCategory(name string) error {
+func AddCategory(name string,InitFlag bool) error {
 	o := orm.NewOrm()
 
 	cate := &Category{Title: name}
@@ -235,7 +233,11 @@ func AddCategory(name string) error {
 	if err == nil {
 		return err
 	}
-	//cate.TopicCount++ 
+	
+	if !InitFlag {
+		cate.TopicCount++ 
+	}
+	
 	_, err = o.Insert(cate)
 	if err != nil {
 		return err
@@ -245,16 +247,29 @@ func AddCategory(name string) error {
 }
 
 func DelCategory(id string) error {
-	cid, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		return err
-	}
-
+	category, err := GetCategory(id)
 	o := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	qs := o.QueryTable("topic")
+	
+	_, err = qs.Filter("category", category.Title).All(&topics)
+	
+	if err == nil {
+		for _, topic := range topics {
+			_, err = o.Delete(topic)
+		}
+	}
+	
+	cid, Err := strconv.ParseInt(id, 10, 64)
+	if Err != nil {
+		return Err
+	}
 
 	cate := &Category{Id: cid}
 	_, err = o.Delete(cate)
+	
 	return err
+	
 }
 
 func GetAllTopics(cate string,isDesc bool) ([]*Topic, error) {
@@ -284,6 +299,23 @@ func GetAllCategories() ([]*Category, error) {
 	_, err := qs.All(&cates)
 
 	return cates, err
+}
+
+func GetCategory(tid string) (*Category,error) {
+	tidNum, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	o := orm.NewOrm()
+	category := new(Category)
+
+	qs := o.QueryTable("category")
+	err = qs.Filter("id", tidNum).One(category)
+	if err != nil {
+		return nil, err
+	}
+
+	return category, err
 }
 
 func GetTopic(tid string) (*Topic,error) {
@@ -338,13 +370,22 @@ func UpdateTopic(tid string,add bool) error {
 	topic := new(Topic)
 	qs := o.QueryTable(topic)
 	err = qs.Filter("Id",cid).One(topic)
+	
 	if err != nil {
 		return err
 	}
 	if add {
 		topic.ReplyCount++
+		topic.ReplyTime = time.Now().Format("2006-01-02 15:04:05")
 	} else {
+		replies := make([]*Comment,0)
+		qs = o.QueryTable("comment")
+		_, err = qs.Filter("tid",cid).OrderBy("-created").All(&replies)
+		if err != nil {
+			return err
+		}
 		topic.ReplyCount--
+		topic.ReplyTime = replies[0].Created
 	}
 	
 	_, err = o.Update(topic)

@@ -19,7 +19,7 @@ func (this *CategoryController) Get() {
 			break
 		}
 		
-		err := models.AddCategory(name)
+		err := models.AddCategory(name,true)
 		if err != nil {
 			fmt.Println("oooooooooooop")
 			beego.Error(err)

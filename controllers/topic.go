@@ -49,7 +49,7 @@ func (this *TopicController) Post() {
 			models.UpdateCategory(category,true)
 		} else {
 			beego.Debug("Not!")
-			models.AddCategory(category)
+			models.AddCategory(category,false)
 		}
 	} else {
 		err = models.ModifyTopic(tid, title, content, category)
@@ -58,7 +58,7 @@ func (this *TopicController) Post() {
 			models.UpdateCategory(category,false)
 		} else {
 			beego.Debug("Not!")
-			models.AddCategory(category)
+			models.AddCategory(category,false)
 		}
 	}
 	if err != nil {

@@ -18,7 +18,7 @@ func (this *ReplyController) Add() {
 		beego.Error(err)
 	}
 	
-	err =models.UpdateTopic(tid,true)
+	err = models.UpdateTopic(tid,true)
 	if err != nil {
 		beego.Error(err)
 	}
