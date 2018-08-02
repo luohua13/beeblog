@@ -18,8 +18,7 @@ func (this *CategoryController) Get() {
 		if len(name) == 0 {
 			break
 		}
-		//fmt.Println("555555555555")
-		//fmt.Println("tao:",name)
+		
 		err := models.AddCategory(name)
 		if err != nil {
 			fmt.Println("oooooooooooop")
