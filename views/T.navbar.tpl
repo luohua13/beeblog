@@ -11,7 +11,7 @@
 <div class="pull-right">
 	<ul class="nav navbar-nav">
 		{{if .IsLogin}}
-		<li><a href="/login?exit=true">退出</a></li>
+		<li><a href="/login/exit">退出</a></li>
 		{{else}}
 		<li><a href="/login">管理员登录</a></li>
 		{{end}}

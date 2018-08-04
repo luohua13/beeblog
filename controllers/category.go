@@ -54,3 +54,16 @@ func (this *CategoryController) Get() {
 	this.TplName = "category.html"
 }
 
+func (this *CategoryController) Delete() {
+	if !checkAccount(this.Ctx) {
+		this.Redirect("/login", 302)
+		return
+	}
+
+	err := models.DelCategory(this.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err)
+	}
+	this.Redirect("/category", 302)
+}
+
