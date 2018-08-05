@@ -121,7 +121,7 @@ func GetAllReplies(tid string) (replies []*Comment, err error) {
 	return replies, err
 }
 
-func ModifyTopic(tid, title, content, category, label string) error {
+func ModifyTopic(tid, title, content, category, label, attachment string) error {
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 
 	o := orm.NewOrm()
@@ -132,14 +132,16 @@ func ModifyTopic(tid, title, content, category, label string) error {
 		return err
 	}
 
-	var oldCate string
+	var oldCate, oldAttach string
 	topic := &Topic{Id: id}
 
 	if o.Read(topic) == nil {
 		oldCate = topic.Category
+		oldAttach = topic.Attachment
 		topic.Title = title
 		topic.Category = category
 		topic.Content = content
+		topic.Attachment = attachment
 		topic.Labels = label
 		topic.Updated = time.Now().Format("2006-01-02 15:04:05")
 		o.Update(topic)
@@ -160,6 +162,11 @@ func ModifyTopic(tid, title, content, category, label string) error {
 
 		}
 	}
+
+	if len(oldAttach) > 0 {
+		os.Remove(path.Join("attachment", oldAttach))
+	}
+
 	return err
 }
 
@@ -196,17 +203,18 @@ func DeleteTopic(id string) error {
 	return err
 }
 
-func AddTopic(title, content, category, label string) error {
+func AddTopic(title, content, category, label, attachment string) error {
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 	o := orm.NewOrm()
 
 	topic := &Topic{
-		Title:    title,
-		Category: category,
-		Content:  content,
-		Labels:   label,
-		Cteated:  time.Now().Format("2006-01-02 15:04:05"),
-		Updated:  time.Now().Format("2006-01-02 15:04:05"),
+		Title:      title,
+		Category:   category,
+		Content:    content,
+		Attachment: attachment,
+		Labels:     label,
+		Cteated:    time.Now().Format("2006-01-02 15:04:05"),
+		Updated:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	_, err := o.Insert(topic)

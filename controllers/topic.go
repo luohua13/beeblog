@@ -3,8 +3,8 @@ package controllers
 import (
 	"beeblog/models"
 	"github.com/astaxie/beego"
+	"path"
 	"strings"
-	//"path"
 )
 
 type TopicController struct {
@@ -35,16 +35,27 @@ func (this *TopicController) Post() {
 	title := this.Input().Get("title")
 	content := this.Input().Get("content")
 	label := this.Input().Get("label")
-
-	//=====================================
 	category := this.Input().Get("category")
 	tid := this.Input().Get("tid")
 	this.Data["IsLogin"] = checkAccount(this.Ctx)
-	//======================================
-	var err error
+
+	//获取附件
+	_, fh, err := this.GetFile("attachment")
+	if err != nil {
+		beego.Error(err)
+	}
+	var attachment string
+	if fh != nil {
+		attachment = fh.Filename
+		beego.Info(attachment)
+		err = this.SaveToFile("attachment", path.Join("attachment", attachment))
+		if err != nil {
+			beego.Error(err)
+		}
+	}
 
 	if len(tid) == 0 {
-		err = models.AddTopic(title, content, category, label)
+		err = models.AddTopic(title, content, category, label, attachment)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
 			models.UpdateCategory(category, true)
@@ -53,7 +64,7 @@ func (this *TopicController) Post() {
 			models.AddCategory(category, false)
 		}
 	} else {
-		err = models.ModifyTopic(tid, title, content, category, label)
+		err = models.ModifyTopic(tid, title, content, category, label, attachment)
 		if models.CheckCategory(category) {
 			beego.Debug("had!")
 			models.UpdateCategory(category, false)
