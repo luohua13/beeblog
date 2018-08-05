@@ -9,8 +9,15 @@
     	    </div>
     	</div>
     	<div class="container">
+    		{{$labels := .Labels}}
            <h1 style="margin-top:60px">{{.Topic.Title}}</h1> 
            <h3>分类：<a href="/?cate={{.Topic.Category}}">{{.Topic.Category}}</a></h3>
+           <h5>
+           		标签：
+           		{{range $labels}}
+           			<a href="/?label={{.}}">{{.}}</a>
+           		{{end}}
+           </h5>
            <h4><a href="/topic/modify?tid={{.Topic.Id}}">修改</a> </h4>
            <script>
 			   var contents={{.Topic.Content}}.replace(/\r\n/g,"<br />");
